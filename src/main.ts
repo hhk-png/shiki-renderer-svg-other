@@ -2,6 +2,10 @@ import './style.css'
 import typescriptLogo from './typescript.svg'
 import viteLogo from '/vite.svg'
 import { setupCounter } from './counter.ts'
+import { measureFont } from './measureFont.ts'
+
+console.log(await measureFont(12, '"Lucida Console", Courier, monospace', ""))
+
 
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
   <div>
