@@ -1,6 +1,11 @@
 import playwright from 'playwright'
 
-function measureStr([fontSize, fontFamily]: [number, string]) {
+interface Measurement {
+  width: number,
+  height: number
+}
+
+function measureStr([fontSize, fontFamily]: [number, string]): Measurement {
   if (fontSize <= 0) {
     fontSize = 12
   }
@@ -9,7 +14,7 @@ function measureStr([fontSize, fontFamily]: [number, string]) {
   span.style.fontSize = fontSize + 'px'
   span.style.fontFamily = fontFamily
   span.style.display = 'inline-block'
-  span.textContent = 'a'
+  span.textContent = 'w'
   document.body.appendChild(span)
   const { width, height } = window.getComputedStyle(span)
   document.body.removeChild(span)
@@ -36,7 +41,7 @@ const getDocument = (fontName: string, url: string) => {
 `
 }
 
-export async function measureFont(fontSize: number, fontFamily: string, remoteFontCSSURL: string) {
+export async function measureFont(fontSize: number, fontFamily: string, remoteFontCSSURL: string = ""): Promise<Measurement> {
   if (typeof window !== 'undefined') {
     return measureStr([fontSize, fontFamily])
   } else {
