@@ -6,12 +6,30 @@ interface Token {
   offset?: number
 }
 
+interface RenderOptions {
+  fontFamily?: string
+  fontSize?: number
+  backgroundColor?: string
+
+}
+
+const defaultRenderOptions: Required<RenderOptions> = {
+  fontFamily: '"Lucida Console", Courier, monospace',
+  fontSize: 20,
+  backgroundColor: '#eee',
+}
+
 export async function renderToSVG<T extends Token>(
-  tokenLines: T[][]
+  tokenLines: T[][],
+  options?: RenderOptions
 ): Promise<string> {
-  const fontFamily = '"Lucida Console", Courier, monospace'
-  const fontSize = 20
-  const backgroundColor = '#eee'
+
+  const {
+    fontFamily,
+    fontSize,
+    backgroundColor,
+  } = Object.assign(defaultRenderOptions, options)
+
   const { width: fontWidth, height: fontHeight } = await measureFont(
     fontSize,
     fontFamily
@@ -21,7 +39,7 @@ export async function renderToSVG<T extends Token>(
     fontWidth,
     fontHeight
   )
-  let svg = `<svg width="${svgWidth}" height="${svgHeight}" font-family='${fontFamily}' font-size="${fontSize}" style="background-color: ${backgroundColor};" xmlns="http://www.w3.org/2000/svg">`
+  let svg = `<svg viewBox="0 0 ${svgWidth} ${svgHeight}" width="${svgWidth}" height="${svgHeight}" font-family='${fontFamily}' font-size="${fontSize}" style="background-color: ${backgroundColor};" xmlns="http://www.w3.org/2000/svg">`
 
   let x = Math.floor(fontWidth / 2)
   let y = Math.floor(fontHeight / 4) + fontHeight

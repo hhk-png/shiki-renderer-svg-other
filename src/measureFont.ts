@@ -1,7 +1,7 @@
 import playwright from 'playwright'
 
 interface Measurement {
-  width: number,
+  width: number
   height: number
 }
 
@@ -41,18 +41,28 @@ const getDocument = (fontName: string, url: string) => {
 `
 }
 
-export async function measureFont(fontSize: number, fontFamily: string, remoteFontCSSURL: string = ""): Promise<Measurement> {
+export async function measureFont(
+  fontSize: number,
+  fontFamily: string,
+  remoteFontCSSURL: string = ''
+): Promise<Measurement> {
   if (typeof window !== 'undefined') {
     return measureStr([fontSize, fontFamily])
   } else {
     const browser = await playwright.chromium.launch({ headless: true })
     const page = await browser.newPage()
     if (remoteFontCSSURL.length) {
-      await page.goto(`data:text/html,${getDocument(fontFamily, remoteFontCSSURL)}`, {
-        waitUntil: 'networkidle'
-      })
+      await page.goto(
+        `data:text/html,${getDocument(fontFamily, remoteFontCSSURL)}`,
+        {
+          waitUntil: 'networkidle',
+        }
+      )
     }
-    const measurement = await page.evaluate(measureStr, [fontSize, fontFamily] as [number, string])
+    const measurement = await page.evaluate(measureStr, [
+      fontSize,
+      fontFamily,
+    ] as [number, string])
     await browser.close()
     return measurement
   }
