@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { codeToTokens } from 'shiki'
-import { getSVGRenderer } from '../src/renderToSVG.ts'
+import { renderToSVG } from '../src/renderToSVG.ts'
 import { writeFileSync } from 'fs'
 
 function writeHTMLFile(svgStr: string) {
@@ -14,7 +14,7 @@ function writeHTMLFile(svgStr: string) {
   </body>
 </html>
 `
-  writeFileSync('test.html', htmlfile)
+  writeFileSync('./test/cache/test.html', htmlfile)
 }
 
 describe("renderToSVG", () => {
@@ -38,8 +38,7 @@ fact(1).then(show)`
       theme: 'github-light'
     })
 
-    const render = getSVGRenderer()
-    const res = await render.renderToSVG(tokens)
+    const res = await renderToSVG(tokens)
     expect(res).toContain('</text>')
     expect(res).toContain('</tspan>')
     expect(res).toContain('<svg')

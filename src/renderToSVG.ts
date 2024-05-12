@@ -6,45 +6,45 @@ interface Token {
   offset?: number
 }
 
-export function getSVGRenderer() {
-  return {
-    async renderToSVG<T extends Token>(tokenLines: T[][]): Promise<string> {
-      const fontFamily = '"Lucida Console", Courier, monospace'
-      const fontSize = 20
-      const backgroundColor = '#eee'
-      const { width: fontWidth, height: fontHeight } = await measureFont(
-        fontSize,
-        fontFamily,
-      )
-      const [svgWidth, svgHeight] = getAdaptiveWidthAndHeight(
-        tokenLines,
-        fontWidth,
-        fontHeight
-      )
-      let svg = `<svg width="${svgWidth}" height="${svgHeight}" font-family='${fontFamily}' font-size="${fontSize}" style="background-color: ${backgroundColor};" xmlns="http://www.w3.org/2000/svg">`
+export async function renderToSVG<T extends Token>(
+  tokenLines: T[][]
+): Promise<string> {
+  const fontFamily = '"Lucida Console", Courier, monospace'
+  const fontSize = 20
+  const backgroundColor = '#eee'
+  const { width: fontWidth, height: fontHeight } = await measureFont(
+    fontSize,
+    fontFamily
+  )
+  const [svgWidth, svgHeight] = getAdaptiveWidthAndHeight(
+    tokenLines,
+    fontWidth,
+    fontHeight
+  )
+  let svg = `<svg width="${svgWidth}" height="${svgHeight}" font-family='${fontFamily}' font-size="${fontSize}" style="background-color: ${backgroundColor};" xmlns="http://www.w3.org/2000/svg">`
 
-      let x = Math.floor(fontWidth / 2)
-      let y = Math.floor(fontHeight / 4) + fontHeight
-      for (const line of tokenLines) {
-        if (line.length === 0) {
-          svg += `<text x="${x}" y="${y}"><tspan fill="#000">&nbsp;</tspan></text>`
-        } else {
-          svg += `<text x="${x}" y="${y}">`
+  let x = Math.floor(fontWidth / 2)
+  let y = Math.floor(fontHeight / 4) + fontHeight
+  for (const line of tokenLines) {
+    if (line.length === 0) {
+      svg += `<text x="${x}" y="${y}"><tspan fill="#000">&nbsp;</tspan></text>`
+    } else {
+      svg += `<text x="${x}" y="${y}">`
 
-          for (const token of line) {
-            svg += `<tspan fill="${token.color}">${decodeContent(token.content!)}</tspan>`
-          }
-
-          svg += "</text>"
-        }
-        y += fontHeight
+      for (const token of line) {
+        svg += `<tspan fill="${token.color}">${decodeContent(
+          token.content!
+        )}</tspan>`
       }
 
-      svg += "</svg>"
-
-      return svg
-    },
+      svg += '</text>'
+    }
+    y += fontHeight
   }
+
+  svg += '</svg>'
+
+  return svg
 }
 
 const contentMap = new Map<string, string>([
@@ -53,7 +53,7 @@ const contentMap = new Map<string, string>([
   ['>', '&gt;'],
   ['&', '&amp;'],
   ['"', '&quot;'],
-  ["'", '&#39;']
+  ["'", '&#39;'],
 ])
 
 function decodeContent(str: string) {
@@ -75,7 +75,9 @@ function getAdaptiveWidthAndHeight<T extends Token>(
 ) {
   const height = (tokenLines.length + 1) * fontHeight
   const maxCharNum = Math.max(
-    ...tokenLines.map(line => line.reduce((acc, val) => acc + val.content!.length, 0))
+    ...tokenLines.map((line) =>
+      line.reduce((acc, val) => acc + val.content!.length, 0)
+    )
   )
   const width = (maxCharNum + 1) * fontWidth
   return [width, height]
