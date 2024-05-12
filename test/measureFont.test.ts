@@ -1,11 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {measureFont} from '../src/measureFont.ts'
-import { codeToTokens } from 'shiki'
-import { getSVGRenderer } from '../src/renderToSVG.ts'
-import { writeFileSync } from 'fs'
 
 describe("measureFont", () => {
-
   it("measureFont width fontSize", async () => {
     const measurement = await measureFont(20, '"Lucida Console", Courier, monospace', "")
     expect(measurement.width).toBeGreaterThan(0)
@@ -14,6 +10,5 @@ describe("measureFont", () => {
     expect(measurement2.width).toBeGreaterThan(0)
     expect(measurement2.height).toBeGreaterThan(0)
   })
-
 })
 

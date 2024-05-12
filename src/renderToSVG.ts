@@ -74,7 +74,9 @@ function getAdaptiveWidthAndHeight<T extends Token>(
   fontHeight: number
 ) {
   const height = (tokenLines.length + 1) * fontHeight
-  const maxCharNum = Math.max(...tokenLines.map(line => line.reduce((acc, val) => acc + val.content!.length, 0)))
+  const maxCharNum = Math.max(
+    ...tokenLines.map(line => line.reduce((acc, val) => acc + val.content!.length, 0))
+  )
   const width = (maxCharNum + 1) * fontWidth
   return [width, height]
 }

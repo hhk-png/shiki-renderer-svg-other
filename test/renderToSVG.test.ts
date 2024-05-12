@@ -3,6 +3,20 @@ import { codeToTokens } from 'shiki'
 import { getSVGRenderer } from '../src/renderToSVG.ts'
 import { writeFileSync } from 'fs'
 
+function writeHTMLFile(svgStr: string) {
+  const htmlfile = `
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+  <body>
+    ${svgStr}
+  </body>
+</html>
+`
+  writeFileSync('test.html', htmlfile)
+}
+
 describe("renderToSVG", () => {
   
   it("renderToSVG", async () => {
@@ -26,18 +40,11 @@ fact(1).then(show)`
 
     const render = getSVGRenderer()
     const res = await render.renderToSVG(tokens)
-    expect(res).toContain('<text>')
+    expect(res).toContain('</text>')
+    expect(res).toContain('</tspan>')
+    expect(res).toContain('<svg')
     
-    const htmlfile = `
-    <!DOCTYPE html>
-    <html>
-    <head>
-    </head>
-    <body>
-    ${res}
-    </body>
-    </html>
-    `
-    writeFileSync('test.html', htmlfile)
+    // for ui test
+    writeHTMLFile(res)
   })
 })
