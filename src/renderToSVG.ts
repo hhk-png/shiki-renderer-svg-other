@@ -16,7 +16,6 @@ export function getSVGRenderer() {
         fontSize,
         fontFamily,
       )
-      console.log(fontWidth, fontHeight)
       const [svgWidth, svgHeight] = getAdaptiveWidthAndHeight(
         tokenLines,
         fontWidth,
@@ -58,15 +57,15 @@ const contentMap = new Map<string, string>([
 ])
 
 function decodeContent(str: string) {
-  const res: string[] = []
+  let res: string = ''
   for (let i = 0; i < str.length; i++) {
     if (contentMap.has(str[i])) {
-      res.push(contentMap.get(str[i])!)
+      res += contentMap.get(str[i])!
     } else {
-      res.push(str[i])
+      res += str[i]
     }
   }
-  return res.join('')
+  return res
 }
 
 function getAdaptiveWidthAndHeight<T extends Token>(
