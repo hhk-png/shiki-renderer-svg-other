@@ -10,13 +10,25 @@ interface RenderOptions {
   fontFamily?: string
   fontSize?: number
   backgroundColor?: string
-
+  borderRadius?: number,
+  selectionbgColor?: string,
+  cursor?: string,
+  selectionFill?: string,
+  opacity?: number
 }
 
+// lineheight
+// remotefonturl
+// svg \n
 const defaultRenderOptions: Required<RenderOptions> = {
   fontFamily: '"Lucida Console", Courier, monospace',
   fontSize: 20,
   backgroundColor: '#eee',
+  borderRadius: 0,
+  selectionbgColor: '#b4d5ea',
+  cursor: 'default',
+  selectionFill: '',
+  opacity: 1
 }
 
 export async function renderToSVG<T extends Token>(
@@ -28,7 +40,14 @@ export async function renderToSVG<T extends Token>(
     fontFamily,
     fontSize,
     backgroundColor,
+    borderRadius,
+    selectionbgColor,
+    cursor,
+    // selectionFill,
+    opacity
   } = Object.assign(defaultRenderOptions, options)
+
+  const svgId = "data-svg-" + getId()
 
   const { width: fontWidth, height: fontHeight } = await measureFont(
     fontSize,
@@ -39,8 +58,10 @@ export async function renderToSVG<T extends Token>(
     fontWidth,
     fontHeight
   )
-  let svg = `<svg viewBox="0 0 ${svgWidth} ${svgHeight}" width="${svgWidth}" height="${svgHeight}" font-family='${fontFamily}' font-size="${fontSize}" style="background-color: ${backgroundColor};" xmlns="http://www.w3.org/2000/svg">`
-
+  // todo: fill is ""
+  let svg = `<svg ${svgId} viewBox="0 0 ${svgWidth} ${svgHeight}" width="${svgWidth}" height="${svgHeight}" font-family='${fontFamily}' font-size="${fontSize}" style="background-color: ${backgroundColor};opacity:${opacity};" xmlns="http://www.w3.org/2000/svg">`
+  svg += `<style>svg[${svgId}]{border-radius: ${borderRadius};cursor:${cursor};}svg[${svgId}] tspan::selection{background-color:${selectionbgColor};}</style>`
+  
   let x = Math.floor(fontWidth / 2)
   let y = Math.floor(fontHeight / 4) + fontHeight
   for (const line of tokenLines) {
@@ -63,6 +84,10 @@ export async function renderToSVG<T extends Token>(
   svg += '</svg>'
 
   return svg
+}
+
+function getId() {
+  return Math.random().toString(36).substring(2, 9)
 }
 
 const contentMap = new Map<string, string>([
