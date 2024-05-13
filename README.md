@@ -1,1 +1,1 @@
-shiki-renderer-svg
+shiki-renderer-svg-other
