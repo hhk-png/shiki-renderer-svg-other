@@ -64,6 +64,8 @@ export async function measureFont(
       fontFamily,
     ] as [number, string])
     await browser.close()
+    // the fontHeight measured by chrome is 1.5 times that of playwright
+    measurement.height = 1.5 * measurement.height
     return measurement
   }
 }
