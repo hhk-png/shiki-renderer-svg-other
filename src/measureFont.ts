@@ -1,30 +1,35 @@
+/// <reference path="./global.d.ts" />
+
 import playwright from 'playwright'
 
 interface Measurement {
+  /**
+   * The width and height of the measured text
+   */
   width: number
   height: number
 }
 
 function measureStr([fontSize, fontFamily]: [number, string]): Measurement {
-  if (fontSize <= 0) {
+  if (fontSize <= 0)
     fontSize = 12
-  }
+
   const span = document.createElement('span')
   span.style.visibility = 'hidden'
-  span.style.fontSize = fontSize + 'px'
+  span.style.fontSize = `${fontSize}px`
   span.style.fontFamily = fontFamily
   span.style.display = 'inline-block'
-  span.textContent = 'w'
+  span.textContent = 'a'
   document.body.appendChild(span)
   const { width, height } = window.getComputedStyle(span)
   document.body.removeChild(span)
   return {
-    width: parseInt(width),
-    height: parseInt(height),
+    width: Number.parseFloat(width),
+    height: Number.parseFloat(height),
   }
 }
 
-const getDocument = (fontName: string, url: string) => {
+function getDocument(fontName: string, url: string) {
   return `
 <!DOCTYPE html>
 <html>
@@ -41,14 +46,18 @@ const getDocument = (fontName: string, url: string) => {
 `
 }
 
+/**
+ * measure the width and height of char 'a' based on fontSize and fontFamily
+ */
 export async function measureFont(
   fontSize: number,
   fontFamily: string,
-  remoteFontCSSURL: string = ''
+  remoteFontCSSURL: string = '',
 ): Promise<Measurement> {
-  if (typeof window !== 'undefined') {
+  if (__BROWSER__) {
     return measureStr([fontSize, fontFamily])
-  } else {
+  }
+  else {
     const browser = await playwright.chromium.launch({ headless: true })
     const page = await browser.newPage()
     if (remoteFontCSSURL.length) {
@@ -56,7 +65,7 @@ export async function measureFont(
         `data:text/html,${getDocument(fontFamily, remoteFontCSSURL)}`,
         {
           waitUntil: 'networkidle',
-        }
+        },
       )
     }
     const measurement = await page.evaluate(measureStr, [
@@ -65,7 +74,7 @@ export async function measureFont(
     ] as [number, string])
     await browser.close()
     // the fontHeight measured by chrome is 1.5 times that of playwright
-    measurement.height = 1.5 * measurement.height
+    measurement.height *= 1.5
     return measurement
   }
 }
