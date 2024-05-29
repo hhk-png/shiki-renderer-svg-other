@@ -1,4 +1,4 @@
-shiki-renderer-svg-other
+svg-code-block-renderer
 
 render result:
 
