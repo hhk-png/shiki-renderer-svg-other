@@ -12,7 +12,7 @@ interface RenderOptions {
   /**
    * The rendered font size.
    *
-   * @default 16
+   * @default 20
    */
   fontSize?: number
 
