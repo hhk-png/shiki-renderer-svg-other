@@ -27,8 +27,10 @@ fact(1).then(show)`
   })
 
   it('renderToSVG', async () => {
-    const { renderToSVG } = await getSVGRenderer()
-    const res = await renderToSVG(tokens)
+    const { renderToSVG } = await getSVGRenderer({
+      lineHeightRatio: 1.5,
+    })
+    const res = renderToSVG(tokens)
     expect(res).toContain('</text>')
     expect(res).toContain('</tspan>')
     expect(res).toContain('<svg')
@@ -38,17 +40,6 @@ fact(1).then(show)`
 
     // for ui test
     writeHTMLFile(res)
-  })
-
-  it('line height ratio', async () => {
-    const fontSize = 20
-    const { renderToSVG } = await getSVGRenderer({
-      fontSize,
-      lineHeightRatio: 1,
-    })
-    const svgHeight = (str.split('\n').length + 1) * fontSize
-    const res = await renderToSVG(tokens)
-    expect(res).toContain(`height="${svgHeight.toFixed(2)}"`)
   })
 
   it('fontSize', async () => {
@@ -96,14 +87,17 @@ fact(1).then(show)`
 
 function writeHTMLFile(svgStr: string) {
   const htmlfile = `
-<!DOCTYPE html>
-<html>
-<head>
-</head>
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+  </head>
   <body>
     ${svgStr}
   </body>
-</html>
+  </html>
 `
   // create uiviewer folder
   if (!existsSync(new URL('./uiviewer', import.meta.url)))

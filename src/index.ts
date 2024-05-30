@@ -17,10 +17,11 @@ interface RenderOptions {
   fontSize?: number
 
   /**
-   * The line height is caculated based on the font height.
-   * The lineHeightRatio is the ratio of line height to font height(font size).
-   *
-   * @default 1.5
+   * The fontHeight measured by playwright is different from browser environment.
+   * You could use this option to make fontHeight same.
+   * The lineHeightRatio is the ratio of line height to font size.
+   * 
+   * @default -1
    */
   lineHeightRatio?: number
 
@@ -78,8 +79,8 @@ interface RenderOptions {
 type RequiredRenderOptions = Required<RenderOptions>
 const defaultRenderOptions: RequiredRenderOptions = {
   fontFamily: '"Lucida Console", Courier, monospace',
-  fontSize: 16,
-  lineHeightRatio: 1.5,
+  fontSize: 20,
+  lineHeightRatio: -1,
   backgroundColor: '#eee',
   borderRadius: 0,
   opacity: 1,
@@ -90,8 +91,8 @@ const defaultRenderOptions: RequiredRenderOptions = {
 }
 
 type Token = {
-  content: string
-  color: string
+  content?: string
+  color?: string
 }
 interface IToken extends Token {}
 
@@ -112,7 +113,9 @@ export async function getSVGRenderer(renderOptions?: RenderOptions) {
     fontFamily,
     remoteFontCSSURL,
   )
-  fontHeight *= (lineHeightRatio / 1.5)
+  if (lineHeightRatio !== -1) {
+    fontHeight = lineHeightRatio * fontSize
+  }
 
   return {
     renderToSVG(tokenLines: IToken[][]) {
