@@ -1,4 +1,3 @@
-import type { ThemedToken } from 'shiki'
 import { measureFont } from './measureFont'
 
 interface RenderOptions {
@@ -99,13 +98,15 @@ interface IToken extends Token {}
 export async function getSVGRenderer(renderOptions?: RenderOptions) {
   const options = { ...defaultRenderOptions, ...renderOptions }
 
-  const svgId = getId()
-  const styleStr = generateStyle(svgId, options)
+  // svg file didn't support attribute selector
+  const svgClassId = 'svg' + Math.random().toString(36).substring(2, 9)
+  const styleStr = generateStyle(svgClassId, options)
   const {
     fontSize,
     fontFamily,
     remoteFontCSSURL,
     lineHeightRatio,
+    backgroundColor
   } = options
 
   let { width: fontWidth, height: fontHeight } = await measureFont(
@@ -125,10 +126,11 @@ export async function getSVGRenderer(renderOptions?: RenderOptions) {
         fontHeight,
       )
 
-      let svg = `<svg ${svgId} viewBox="0 0 ${svgWidth} ${svgHeight}" width="${svgWidth}" `
-        + `height="${svgHeight}" font-size="${fontSize}px" xmlns="http://www.w3.org/2000/svg">`
+      let svg = `<svg class="${svgClassId}" viewBox="0 0 ${svgWidth} ${svgHeight}" width="${svgWidth}px" `
+        + `height="${svgHeight}px" font-size="${fontSize}px" xmlns="http://www.w3.org/2000/svg">`
       svg += styleStr
 
+      svg += `<rect width="${svgWidth}px" height="${svgHeight}px" fill="${backgroundColor}" pointer-events="none"/>`
       const x = Math.floor(fontWidth / 2)
       let y = Math.floor(fontHeight / 4) + fontHeight
       for (const line of tokenLines) {
@@ -159,7 +161,6 @@ export async function getSVGRenderer(renderOptions?: RenderOptions) {
 function generateStyle(svgId: string, options: RequiredRenderOptions) {
   const {
     fontFamily,
-    backgroundColor,
     borderRadius,
     cursor,
     opacity,
@@ -168,9 +169,9 @@ function generateStyle(svgId: string, options: RequiredRenderOptions) {
   } = options
 
   // svg css
-  let svgStyle = `svg[${svgId}]`
+  let svgStyle = `.${svgId}`
   svgStyle += '{'
-  svgStyle += (`font-family:${fontFamily};background-color:${backgroundColor};cursor:${cursor};`)
+  svgStyle += (`font-family:${fontFamily};cursor:${cursor};`)
   if (opacity < 1 && opacity >= 0)
     svgStyle += `opacity:${opacity};`
 
@@ -180,7 +181,7 @@ function generateStyle(svgId: string, options: RequiredRenderOptions) {
   svgStyle += `}`
 
   // selection css
-  let svgStyleSelection = `svg[${svgId}] tspan::selection`
+  let svgStyleSelection = `.${svgId} tspan::selection`
   svgStyleSelection += '{'
   svgStyleSelection += `background-color:${selectionbgColor};`
   if (selectionColor.length > 0)
@@ -191,12 +192,9 @@ function generateStyle(svgId: string, options: RequiredRenderOptions) {
   return `<style>${svgStyle + svgStyleSelection}</style>`
 }
 
-function getId() {
-  return `data-svg-${Math.random().toString(36).substring(2, 9)}`
-}
-
 const contentMap = new Map<string, string>([
-  [' ', '&nbsp;'],
+  // space will not be rendered in the beginning of the text
+  [' ', '&#xA0;'],
   ['<', '&lt;'],
   ['>', '&gt;'],
   ['&', '&amp;'],
@@ -227,5 +225,5 @@ function getAdaptiveWidthAndHeight(
     ),
   )
   const width = (maxCharNum + 1) * fontWidth
-  return [width.toFixed(2), height.toFixed(2)]
+  return [Math.floor(width), Math.floor(height)]
 }
