@@ -1,4 +1,10 @@
-shiki-renderer-svg-other
+
+
+**shiki-renderer-svg-other**
+
+**The package was not published on npmjs.com**
+
+
 
 ## Using
 
