@@ -1,8 +1,20 @@
 {
-  "name": "shiki-renderer-svg",
+  "name": "shiki-renderer-svg-other",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "description": "SVG code block renderer based on shiki",
+  "author": "hhk-png <fangluoabc@163.com>",
   "type": "module",
+  "license": "MIT",
+  "keywords": [
+    "shiki-renderer-svg"
+  ],
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "browser": "dist/index.browser.mjs",
+  "unpkg": "dist/index.iife.min.js",
+  "jsdelivr": "dist/index.iife.min.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "build": "rollup -c",
     "test": "vitest"
