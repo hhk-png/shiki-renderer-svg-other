@@ -28,4 +28,4 @@ jobs:
         run: pnpm install
 
       - name: Typecheck
-        run: npx tsc --noEmit
+        run: tsc --noEmit
