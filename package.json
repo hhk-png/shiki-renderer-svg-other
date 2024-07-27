@@ -2,6 +2,7 @@
   "name": "shiki-renderer-svg-other",
   "private": true,
   "version": "1.0.0",
+  "packageManager": "pnpm@9.6.0",
   "description": "SVG code block renderer based on shiki",
   "author": "hhk-png <fangluoabc@163.com>",
   "type": "module",
