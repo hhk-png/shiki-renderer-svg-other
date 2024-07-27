@@ -29,3 +29,35 @@ jobs:
 
       - name: Typecheck
         run: tsc --noEmit
+  
+  test:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        node: [lts/*]
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        include:
+          - node: 18.x
+            os: ubuntu-latest
+      fail-fast: false
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Set node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Install playwright
+        run: pnpm exec playwright install
+
+      - name: Test
+        run: pnpm run test
