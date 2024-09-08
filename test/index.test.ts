@@ -42,26 +42,25 @@ fact(1).then(show)`
     expect(res).contain('font-size="20px"')
     // for ui test
     writeFile(res)
-    // console.log(res)
   })
 
-  // it('optional options', async () => {
-  //   const { renderToSVG } = getSVGRenderer({ 
-  //     backgroundColor: 'blue',
-  //     borderRadius: 10,
-  //     opacity: 0.5,
-  //     cursor: 'text',
-  //     selectionColor: 'red',
-  //     selectionbgColor: 'yellow'
-  //   })
-  //   const res = renderToSVG(tokens)
-  //   expect(res).toContain('fill="blue"')
-  //   expect(res).toContain('border-radius:10')
-  //   expect(res).toContain('opacity:0.5')
-  //   expect(res).toContain('cursor:text')
-  //   expect(res).toContain('fill:red')
-  //   expect(res).toContain('background-color:yellow')
-  // })
+  it('optional options', async () => {
+    const { renderToSVG } = getSVGRenderer({ 
+      backgroundColor: 'blue',
+      borderRadius: 10,
+      opacity: 0.5,
+      cursor: 'text',
+      selectionColor: 'red',
+      selectionbgColor: 'yellow'
+    })
+    const res = renderToSVG(tokens)
+    expect(res).toContain('fill="blue"')
+    expect(res).toContain('border-radius:10')
+    expect(res).toContain('opacity:0.5')
+    expect(res).toContain('cursor:text')
+    expect(res).toContain('fill:red')
+    expect(res).toContain('background-color:yellow')
+  })
 })
 
 function writeFile(svgStr: string) {
