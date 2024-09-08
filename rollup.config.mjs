@@ -71,6 +71,9 @@ export default [
         globals,
       },
     ],
+    treeshake: {
+      moduleSideEffects: false, 
+    },
     plugins: [
       replace({
         __BROWSER__: JSON.stringify(true),

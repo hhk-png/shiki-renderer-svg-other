@@ -1,6 +1,5 @@
 /// <reference path="./global.d.ts" />
-
-import playwright from 'playwright'
+import { Canvas } from "skia-canvas"
 
 interface Measurement {
   /**
@@ -10,7 +9,13 @@ interface Measurement {
   height: number
 }
 
-function measureStr([fontSize, fontFamily]: [number, string]): Measurement {
+interface MeasureOptions {
+  fontSize: number
+  fontFamily: string
+}
+
+function measureStr(options: MeasureOptions): Measurement {
+  let { fontSize, fontFamily } = options
   if (fontSize <= 0)
     fontSize = 12
 
@@ -28,51 +33,31 @@ function measureStr([fontSize, fontFamily]: [number, string]): Measurement {
     height: Number.parseFloat(height),
   }
 }
+function measureWithSkiaCanvas(options: MeasureOptions): Measurement {
+  const canvas = new Canvas(200, 200)
+  const ctx = canvas.getContext('2d')
 
-function getDocument(fontName: string, url: string) {
-  return `
-<!DOCTYPE html>
-<html>
-<head>
-  <style>
-    @import url(${url});
-    body { font-family: '${fontName}'; }
-  </style>
-</head>
-<body>
-<p>Test</p>
-</body>
-</html>
-`
+  ctx.font = options.fontSize + 'px ' + options.fontFamily
+  const metrics = ctx.measureText('a')
+
+  return {
+    width: metrics.width,
+    height: metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent,
+  }
 }
 
 /**
  * measure the width and height of char 'a' based on fontSize and fontFamily
  */
-export async function measureFont(
+export function measureFont(
   fontSize: number,
   fontFamily: string,
-  remoteFontCSSURL: string = '',
-): Promise<Measurement> {
+) {
+  const options = { fontSize, fontFamily }
   if (__BROWSER__) {
-    return measureStr([fontSize, fontFamily])
+    return measureStr(options)
   }
   else {
-    const browser = await playwright.chromium.launch({ headless: true })
-    const page = await browser.newPage()
-    if (remoteFontCSSURL.length) {
-      await page.goto(
-        `data:text/html,${getDocument(fontFamily, remoteFontCSSURL)}`,
-        {
-          waitUntil: 'networkidle',
-        },
-      )
-    }
-    const measurement = await page.evaluate(measureStr, [
-      fontSize,
-      fontFamily,
-    ] as [number, string])
-    await browser.close()
-    return measurement
+    return measureWithSkiaCanvas(options)
   }
 }

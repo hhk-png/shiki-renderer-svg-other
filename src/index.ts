@@ -65,25 +65,16 @@ interface RenderOptions {
    * @default 1
    */
   opacity?: number
-
-  /**
-   * Used for measuring the width and height of the text
-   *  when not in browser environment.
-   *
-   * @default ''
-   */
-  remoteFontCSSURL?: string
 }
 
 type RequiredRenderOptions = Required<RenderOptions>
 const defaultRenderOptions: RequiredRenderOptions = {
-  fontFamily: '"Lucida Console", Courier, monospace',
+  fontFamily: 'Lucida Console, Courier, monospace',
   fontSize: 20,
   lineHeightRatio: -1,
   backgroundColor: '#eee',
   borderRadius: 0,
   opacity: 1,
-  remoteFontCSSURL: '',
   cursor: 'default',
   selectionColor: '',
   selectionbgColor: '#b4d5ea',
@@ -95,7 +86,7 @@ type Token = {
 }
 interface IToken extends Token {}
 
-export async function getSVGRenderer(renderOptions?: RenderOptions) {
+export function getSVGRenderer(renderOptions?: RenderOptions) {
   const options = { ...defaultRenderOptions, ...renderOptions }
 
   // svg file didn't support attribute selector
@@ -104,15 +95,13 @@ export async function getSVGRenderer(renderOptions?: RenderOptions) {
   const {
     fontSize,
     fontFamily,
-    remoteFontCSSURL,
     lineHeightRatio,
     backgroundColor
   } = options
 
-  let { width: fontWidth, height: fontHeight } = await measureFont(
+  let { width: fontWidth, height: fontHeight } = measureFont(
     fontSize,
     fontFamily,
-    remoteFontCSSURL,
   )
   if (lineHeightRatio !== -1) {
     fontHeight = lineHeightRatio * fontSize
