@@ -18,7 +18,7 @@ function replace(opts) {
   })
 }
 
-const external = ['shiki', 'playwright']
+const external = ['shiki', 'skia-canvas']
 const globals = {
   shiki: 'shiki',
 }
