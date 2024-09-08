@@ -28,7 +28,7 @@ fact(1).then(show)
     theme: 'github-light',
   })
 
-  it('renderToSVG', async () => {
+  it('renderToSVG', () => {
     const { renderToSVG } = getSVGRenderer({
       lineHeightRatio: 1.5,
     })
@@ -46,7 +46,7 @@ fact(1).then(show)
     writeFile(res)
   })
 
-  it('optional options', async () => {
+  it('optional options', () => {
     const { renderToSVG } = getSVGRenderer({ 
       backgroundColor: 'blue',
       borderRadius: 10,

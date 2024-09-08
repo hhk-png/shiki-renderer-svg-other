@@ -32,7 +32,7 @@ fact(1).then(show)`
    theme: 'github-light',
  })
  
-const { renderToSVG } = await getSVGRenderer({
+const { renderToSVG } = getSVGRenderer({
    lineHeightRatio: 1.5,
 })
 const res = renderToSVG(tokens)
@@ -50,7 +50,6 @@ writeFileSync(new URL('./svg.svg', import.meta.url), res)
 
 - clone this repository
 - run `pnpm install`
-- run `pnpm exec playwright install`
 - Run tests with `pnpm run test` 
-
+- Coverage with `pnpm run coverage`
 - Build with `pnpm run build`
