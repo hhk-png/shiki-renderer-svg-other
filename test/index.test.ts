@@ -19,7 +19,9 @@ fact(4).then(show)
 fact(5).then(show)
 fact(2).then(show)
 fact(3).then(show)
-fact(1).then(show)`
+fact(1).then(show)
+
+`
 
   const { tokens } = await codeToTokens(str, {
     lang: 'javascript',
