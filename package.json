@@ -18,7 +18,8 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "rollup -c",
-    "test": "vitest --environment node"
+    "test": "vitest --environment node",
+    "coverage": "vitest run --coverage"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^25.0.8",
@@ -26,6 +27,7 @@
     "@rollup/plugin-replace": "^5.0.5",
     "@rollup/plugin-terser": "^0.4.4",
     "@types/node": "^20.12.8",
+    "@vitest/coverage-v8": "^1.6.0",
     "rollup-plugin-dts": "^6.1.1",
     "rollup-plugin-esbuild": "^6.1.1",
     "typescript": "^5.5.4",
